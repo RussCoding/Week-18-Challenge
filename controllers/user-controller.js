@@ -11,11 +11,14 @@ const userController = {
         User.find({})
             .select('-__v')
             .then(dbUserData => res.json(dbUserData))
-            .catch (err => res.status(400).json(err))
+            .catch(err => {
+                console.log(err);
+                res.sendStatus(400);
+              })
     },
 
     getUserById({params}, res) {
-        User.findOne({_id: params._id})
+        User.findOne({_id: params.id})
             .populate({path: 'thoughts', select: '-__v'})
             .populate({path: 'frends', select: '-__v'})
             .then(dbUserData => {
@@ -23,6 +26,7 @@ const userController = {
                     res.status(404).json({message: 'User not found!'});
                     return;
                 }
+                res.json(dbUserData);
             })
             .catch(err => {
                 console.log(err);
